@@ -16,6 +16,12 @@ public class Post {
     @SerializedName("body")
     @Expose
     private String body;
+    @SerializedName("favorite")
+    @Expose
+    private boolean favorite;
+    @SerializedName("read")
+    @Expose
+    private boolean read;
 
     public Integer getUserId() {
         return userId;
@@ -47,5 +53,21 @@ public class Post {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

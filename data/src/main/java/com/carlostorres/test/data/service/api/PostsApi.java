@@ -1,6 +1,8 @@
 package com.carlostorres.test.data.service.api;
 
+import com.carlostorres.test.data.response.Comment;
 import com.carlostorres.test.data.response.Post;
+import com.carlostorres.test.data.response.User;
 
 import java.util.List;
 
@@ -13,6 +15,12 @@ public interface PostsApi {
     @GET("posts")
     Call<List<Post>> getPosts();
 
-    @GET("api/v1/images/{id}")
+    @GET("posts/{id}")
     Call<Post> getPostById(@Path("id") Integer postId);
+
+    @GET("posts/{id}/comments")
+    Call<List<Comment>> getPostComments(@Path("id") Integer postId);
+
+    @GET("users/{id}")
+    Call<User> getUser(@Path("id") Integer userId);
 }

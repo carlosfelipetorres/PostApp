@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.widget.TextView;
 
 import com.carlostorres.test.cleanarchitecture.R;
@@ -21,6 +22,7 @@ import com.carlostorres.test.cleanarchitecture.util.bus.observers.CallServiceBut
 import com.carlostorres.test.data.response.Post;
 import com.carlostorres.test.data.response.PostDB;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +76,8 @@ public class PostsView extends ActivityView implements  LoaderManager.LoaderCall
 
     @OnClick(R.id.fab_refresh)
     public void callRefreshBtnPressed() {
-        getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
-        RxBus.post(new CallServiceButtonObserver.CallServiceButtonPressed());
+        adapter = new PostsAdapter(getActivity(), new HashMap<Integer, Object> ());
+        rvPostsList.setAdapter(adapter);
     }
 
     public void showError() {
@@ -96,6 +98,8 @@ public class PostsView extends ActivityView implements  LoaderManager.LoaderCall
             normalPost.setUserId(post.userId);
             normalPost.setTitle(post.title);
             normalPost.setBody(post.body);
+            normalPost.setFavorite(post.favorite);
+            normalPost.setRead(post.read);
 
             postsList.put(post.postId, normalPost);
         }

@@ -1,8 +1,10 @@
 package com.carlostorres.test.data;
 
 import com.activeandroid.util.Log;
+import com.carlostorres.test.data.response.Comment;
 import com.carlostorres.test.data.response.Post;
 import com.carlostorres.test.data.response.PostDB;
+import com.carlostorres.test.data.response.User;
 import com.carlostorres.test.data.service.api.PostsApi;
 import com.carlostorres.test.domain.service.PostsServices;
 
@@ -56,7 +58,7 @@ public class PostsServicesImpl implements PostsServices {
     }
 
     @Override
-    public void getSinglePost(final Observer<Object> observer, Integer imageId) {
+    public void getSinglePost(final Observer<Object> observer, Integer postId) {
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(URL).
                 addConverterFactory(GsonConverterFactory.create())
@@ -64,12 +66,12 @@ public class PostsServicesImpl implements PostsServices {
 
         PostsApi api = retrofit.create(PostsApi.class);
 
-        Call<Post> call = api.getPostById(imageId);
+        Call<Post> call = api.getPostById(postId);
 
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
-                if (observer != null) {
+                if (observer != null && response.isSuccessful()) {
                     observer.onNext(response.body());
                     observer.onComplete();
                 }
@@ -77,6 +79,64 @@ public class PostsServicesImpl implements PostsServices {
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
+                observer.onError(t);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void getPostComments(final Observer<Object> observer, Integer postId) {
+        Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL).
+            addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+        PostsApi api = retrofit.create(PostsApi.class);
+
+        Call<List<Comment>> call = api.getPostComments(postId);
+
+        call.enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                if (observer != null && response.isSuccessful()) {
+                    observer.onNext(response.body());
+                    observer.onComplete();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                observer.onError(t);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void getUser(final Observer<Object> observer, Integer userId) {
+        Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL).
+            addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+        PostsApi api = retrofit.create(PostsApi.class);
+
+        Call<User> call = api.getUser(userId);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (observer != null && response.isSuccessful()) {
+                    observer.onNext(response.body());
+                    observer.onComplete();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
                 observer.onError(t);
             }
         });

@@ -6,6 +6,7 @@ import com.carlostorres.test.cleanarchitecture.mvp.view.PostsView;
 import com.carlostorres.test.cleanarchitecture.util.bus.RxBus;
 import com.carlostorres.test.cleanarchitecture.util.bus.observers.CallServiceButtonObserver;
 import com.carlostorres.test.data.PostsServicesImpl;
+import com.carlostorres.test.data.response.PostDB;
 import com.carlostorres.test.domain.GetLatestPostsUseCase;
 
 import java.util.Map;
@@ -24,16 +25,14 @@ public class PostsPresenter {
         this.getLatestPostsUseCase = getLatestPostsUseCase;
     }
 
-    public void onCountButtonPressed() {
-        view.showText(new String(""));
-    }
-
     private void onCallServiceButtonPressed() {
 
         getLatestPostsUseCase.execute(new DisposableObserver<Map<Integer, Object>>() {
             @Override
             public void onNext(@NonNull Map<Integer, Object> posts) {
-                view.showPostsList(posts);
+                if(PostDB.getAll().isEmpty()){
+                    view.showPostsList(posts);
+                }
             }
 
             @Override

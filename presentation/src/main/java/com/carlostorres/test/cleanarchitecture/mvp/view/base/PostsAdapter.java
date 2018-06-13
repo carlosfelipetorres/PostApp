@@ -9,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.carlostorres.test.cleanarchitecture.R;
 import com.carlostorres.test.data.response.Post;
+import com.carlostorres.test.data.response.PostDB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +32,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
         TextView id;
         TextView title;
         TextView body;
+        ImageView unreadDot;
+        ImageView favorite;
 
         MyViewHolder(View view) {
             super(view);
@@ -37,6 +41,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
             id = view.findViewById(R.id.tv_id);
             title = view.findViewById(R.id.tv_title);
             body = view.findViewById(R.id.tv_body);
+            unreadDot = view.findViewById(R.id.unread_dot);
+            favorite = view.findViewById(R.id.favorite);
         }
     }
 
@@ -62,13 +68,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(post.getId());
+                showPopupMenu(post.getId(), post.getUserId());
+                PostDB.updateReadPostById(post.getId());
             }
         });
 
         holder.id.setText(post.getId().toString());
         holder.title.setText(post.getTitle());
         holder.body.setText(post.getBody());
+
+        holder.favorite.setVisibility(post.isFavorite() ? View.VISIBLE : View.GONE);
+        holder.unreadDot.setVisibility(post.isRead() ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -76,8 +86,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
         return postsMap.size();
     }
 
-    private void showPopupMenu(Integer id) {
-        DialogFragment customDialog = CustomDialog.newInstance(id);
+    private void showPopupMenu(Integer id, Integer userId) {
+        DialogFragment customDialog = CustomDialog.newInstance(id, userId);
         AppCompatActivity activity = (AppCompatActivity) mContext;
         customDialog.show(activity.getSupportFragmentManager(), "PostsFragment");
     }
